@@ -1,3 +1,8 @@
+## 0.1.1
+
+- The README names the packages that do what this one does not: the model and
+  the rules in `en16931`, and the German profile that reads this syntax.
+
 ## 0.1.0
 
 First release.

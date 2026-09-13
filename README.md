@@ -93,8 +93,11 @@ again, which is what lets an invoice state its VAT in a second currency.
 ## What it does not do
 
 It does not decide what an invoice has to contain: that is the model's
-business, and `validate` from `en16931` says whether it holds up. It does not
-send anything either.
+business, and `validate` from [en16931](https://pub.dev/packages/en16931) says
+whether it holds up. A country puts its own rules on top of the standard, and
+those live in a profile package: Germany reads CII, and
+[en16931_xrechnung](https://pub.dev/packages/en16931_xrechnung) holds what it
+adds. Sending the document is a different problem again.
 
 ## License
 
