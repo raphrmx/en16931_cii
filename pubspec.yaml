@@ -17,15 +17,10 @@ environment:
   sdk: ^3.3.0
 
 dependencies:
-  decimal: ^3.0.0
+  decimal: ^3.2.6
   en16931: ^0.1.0
   xml: ^6.5.0
 
 dev_dependencies:
-  lint: ^2.10.0
-  test: ^1.31.0
-
-# The model is developed alongside this package and is not on pub.dev yet.
-dependency_overrides:
-  en16931:
-    path: ../en16931
+  lint: ^2.4.0
+  test: ^1.25.7
