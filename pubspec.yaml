@@ -1,0 +1,31 @@
+name: en16931_cii
+description: >-
+  Writes and reads the European electronic invoice as UN/CEFACT CII, the
+  syntax France and Germany carry. Works on the EN 16931 semantic model.
+version: 0.1.0
+homepage: https://www.comapps.be
+repository: https://github.com/raphrmx/en16931_cii
+issue_tracker: https://github.com/raphrmx/en16931_cii/issues
+topics:
+  - einvoicing
+  - en16931
+  - cii
+  - facturx
+  - invoice
+
+environment:
+  sdk: ^3.3.0
+
+dependencies:
+  decimal: ^3.0.0
+  en16931: ^0.1.0
+  xml: ^6.5.0
+
+dev_dependencies:
+  lint: ^2.10.0
+  test: ^1.31.0
+
+# The model is developed alongside this package and is not on pub.dev yet.
+dependency_overrides:
+  en16931:
+    path: ../en16931
