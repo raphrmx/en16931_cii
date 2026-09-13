@@ -19,20 +19,58 @@ dependencies:
   en16931_cii: ^0.1.0
 ```
 
-## Write and read
+## Write an invoice out
 
-Build the invoice with [en16931](https://pub.dev/packages/en16931), check it,
-then hand it over. A supplier invoice goes the other way.
+Build it with [en16931](https://pub.dev/packages/en16931), check it, then hand
+it over.
 
 ```dart
 import 'package:en16931/en16931.dart';
 import 'package:en16931_cii/en16931_cii.dart';
 
-final xml = writeCii(invoice);
+final invoice = Invoice.fromLines(
+  number: '2026-0042',
+  issueDate: DateTime(2026, 9, 13),
+  dueDate: DateTime(2026, 10, 13),
+  seller: const Seller(
+    name: 'COMAPPS SRL',
+    vatIdentifier: 'BE0123456789',
+    electronicAddress: Identifier('0123456749', scheme: Scheme.belgianEnterprise),
+    address: Address(city: 'Bruxelles', postalCode: '1000', country: 'BE'),
+  ),
+  buyer: const Buyer(
+    name: 'Client SA',
+    electronicAddress: Identifier('0987654394', scheme: Scheme.belgianEnterprise),
+    address: Address(city: 'Namur', postalCode: '5000', country: 'BE'),
+  ),
+  lines: [
+    InvoiceLine.of(
+      id: '1',
+      item: const Item(name: 'Consulting'),
+      quantity: 8,
+      unitPrice: 150.00,
+      vatRate: 21,
+      unit: UnitCode.hour,
+    ),
+  ],
+);
 
+if (validate(invoice).isEmpty) {
+  final xml = writeCii(invoice);
+}
+```
+
+## Read one back
+
+A supplier invoice goes the other way. What the document does not carry is
+left out rather than guessed, so `validate` tells you what the supplier got
+wrong instead of the reader hiding it.
+
+```dart
 final received = readCii(xml);
+
 for (final violation in validate(received)) {
-  print(violation);
+  print(violation); // [BR-16] The invoice has no line (BG-25).
 }
 ```
 
