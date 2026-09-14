@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:decimal/decimal.dart';
 import 'package:en16931/en16931.dart';
+import 'package:en16931_cii/src/reader.dart' show vatPointDateCodeFor;
 import 'package:xml/xml.dart';
 
 /// The CII invoice namespace, D16B.
@@ -56,9 +57,25 @@ String writeCii(Invoice invoice, {bool pretty = true}) {
 
   final document = builder.buildDocument();
   return pretty
-      ? document.toXmlString(pretty: true, indent: '  ')
+      ? document.toXmlString(
+          pretty: true,
+          indent: '  ',
+          preserveWhitespace: _significantWhitespace,
+        )
       : document.toXmlString();
 }
+
+/// Whether the space inside an element is part of what it says.
+///
+/// Printing an XML document for a human to read reflows the text inside it,
+/// which is harmless everywhere but one place. Germany writes a discount for
+/// early payment into the payment terms (BT-20) and reads it back line by
+/// line, so reflowing that element turns a valid invoice into one that breaks
+/// BR-DE-18.
+bool _significantWhitespace(XmlNode node) =>
+    node is XmlElement &&
+    node.name.local == 'Description' &&
+    node.parentElement?.name.local == 'SpecifiedTradePaymentTerms';
 
 // --- What the document is --------------------------------------------------
 
@@ -454,7 +471,11 @@ void _tradeTax(XmlBuilder b, Invoice invoice, String currency) {
       _text(b, 'CategoryCode', entry.category.code);
       _text(b, 'ExemptionReasonCode', entry.exemptionReasonCode);
       if (invoice.vatPointDateCode != null) {
-        _text(b, 'DueDateTypeCode', invoice.vatPointDateCode);
+        _text(
+          b,
+          'DueDateTypeCode',
+          vatPointDateCodeFor(invoice.vatPointDateCode),
+        );
       }
       if (entry.rate != null) {
         _text(b, 'RateApplicablePercent', entry.rate.toString());

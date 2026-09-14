@@ -72,13 +72,15 @@ Invoice readCii(String xml) {
       'BusinessProcessSpecifiedDocumentContextParameter/ID',
     ),
     vatAccountingCurrency: _text(settlement, 'TaxCurrencyCode'),
-    vatPointDateCode: _text(settlement, 'ApplicableTradeTax/DueDateTypeCode'),
+    vatPointDateCode: vatPointDateCodeOf(
+      _text(settlement, 'ApplicableTradeTax/DueDateTypeCode'),
+    ),
     buyerReference: _text(agreement, 'BuyerReference'),
     buyerAccountingReference: _text(
       settlement,
       'ReceivableSpecifiedTradeAccountingAccount/ID',
     ),
-    paymentTerms: _text(terms, 'Description'),
+    paymentTerms: _verbatim(terms, 'Description'),
     notes: [
       for (final note in _children(header, 'IncludedNote'))
         InvoiceNote(
@@ -291,7 +293,8 @@ Address _address(XmlElement? element) {
 Contact? _contact(XmlElement? element) {
   if (element == null) return null;
   return Contact(
-    name: _text(element, 'PersonName'),
+    // BT-41 is a person or a department, and CII has an element for each.
+    name: _text(element, 'PersonName') ?? _text(element, 'DepartmentName'),
     telephone: _text(element, 'TelephoneUniversalCommunication/CompleteNumber'),
     email: _text(element, 'EmailURIUniversalCommunication/URIID'),
   );
@@ -337,7 +340,8 @@ PaymentInstructions? _payment(XmlElement? settlement) {
         'PayeePartyCreditorFinancialAccount',
       ))
         CreditTransferAccount(
-          _text(account, 'IBANID') ?? '',
+          // BT-84 is an IBAN, or an account number of another shape.
+          _text(account, 'IBANID') ?? _text(account, 'ProprietaryID') ?? '',
           name: _text(account, 'AccountName'),
           providerBic: _text(
             element,
@@ -638,4 +642,41 @@ Identifier? _identifier(
   final value = found.innerText.trim();
   if (value.isEmpty) return null;
   return Identifier(value, scheme: found.getAttribute(scheme));
+}
+
+/// BT-8 as CII writes it, against the code the standard gives it.
+///
+/// The standard draws the VAT point date code from UNCL 2005. CII carries it
+/// as a UNTDID 2475 code, so a document says 5 where the model says 3, and
+/// passing the one through as the other refuses the invoice under BR-CL-06.
+const Map<String, String> _vatPointDateCodes = {
+  '5': '3', // The date the invoice was issued.
+  '29': '35', // The date of delivery.
+  '72': '432', // The date the invoice was paid.
+};
+
+/// The UNCL 2005 code a CII document means by [code].
+String? vatPointDateCodeOf(String? code) =>
+    code == null ? null : _vatPointDateCodes[code] ?? code;
+
+/// The UNTDID 2475 code CII writes for [code].
+String? vatPointDateCodeFor(String? code) {
+  if (code == null) return null;
+  for (final entry in _vatPointDateCodes.entries) {
+    if (entry.value == code) return entry.key;
+  }
+  return code;
+}
+
+/// A term whose whitespace is part of what it says.
+///
+/// Everything else is trimmed, because space around a value in XML is
+/// formatting. BT-20 is the exception: Germany writes a discount for early
+/// payment into that text and reads it back line by line, so the line break
+/// that closes the last one has to survive being read.
+String? _verbatim(XmlElement? element, String path) {
+  final found = _child(element, path);
+  if (found == null) return null;
+  final text = found.innerText;
+  return text.trim().isEmpty ? null : text;
 }

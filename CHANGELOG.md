@@ -7,6 +7,17 @@
 - `xml` moves to 7, which raises the Dart floor to 3.11. The writer names a
   namespace by its prefix and its URI in that order, where version 6 took them
   the other way round.
+- The seller contact point (BT-41) is read from a department as well as from
+  a person, the payment account identifier (BT-84) from an account number as
+  well as from an IBAN, and the payment terms (BT-20) keep their whitespace.
+- The VAT point date code (BT-8) is translated between the two lists. CII
+  carries it as a UNTDID 2475 code where the standard draws it from
+  UNCL 2005, so a document saying 5 means 3, and passing the one through as
+  the other refused the invoice under BR-CL-06.
+- The payment terms keep their line breaks through the printer as well. A
+  pretty printed document reflows the text inside it, which is harmless
+  everywhere but here, and turned a valid German invoice into one that breaks
+  BR-DE-18.
 
 ## 0.1.1
 
