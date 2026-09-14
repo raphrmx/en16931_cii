@@ -16,7 +16,7 @@ and Germany read. Factur-X and XRechnung both sit on it.
 ```yaml
 dependencies:
   en16931: ^0.1.2
-  en16931_cii: ^0.1.2
+  en16931_cii: ^0.1.3
 ```
 
 ## Write an invoice out
@@ -77,6 +77,23 @@ for (final violation in validate(received)) {
 `readCii` throws `CiiFormatException` on three things only: text that is not
 XML, a root that is not a CrossIndustryInvoice, and a document with no issue
 date. Everything else is read as far as it goes.
+
+A document written beyond the standard is read as far as the standard goes,
+and no further. `readCiiReporting` says what was left behind, which matters
+more than it sounds: an invoice whose lines carry lines of their own comes
+back with the parents only, still adds up, and passes.
+
+```dart
+final read = readCiiReporting(xml);
+
+for (final element in read.skipped) {
+  print(element); // 2 x ram:IncludedSupplyChainTradeLineItem (a line under ...)
+}
+```
+
+`ciiElementsBeyondTheModel` names what is looked for. It is shorter than the
+UBL one for a reason: a line under a line is written here by nesting the line
+element inside itself, so there is no separate name to look for.
 
 ## Worth knowing up front
 

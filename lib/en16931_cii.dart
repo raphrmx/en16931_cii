@@ -7,4 +7,6 @@
 library;
 
 export 'src/reader.dart' show CiiFormatException, readCii;
+export 'src/report.dart'
+    show CiiRead, SkippedElement, ciiElementsBeyondTheModel, readCiiReporting;
 export 'src/writer.dart' show ciiInvoice, writeCii;

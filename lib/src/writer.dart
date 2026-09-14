@@ -431,23 +431,44 @@ void _settlement(XmlBuilder b, Invoice invoice, String currency) {
 void _paymentMeans(XmlBuilder b, Invoice invoice) {
   final instructions = invoice.paymentInstructions;
   if (instructions == null) return;
+  // CII carries one account to a payment means, and one bank beside it, so an
+  // invoice offering several accounts writes the group again rather than the
+  // account again. The card and the debited account belong to the payment as
+  // a whole and go with the first.
+  final accounts = instructions.creditTransfers;
+  if (accounts.isEmpty) {
+    _oneMeans(b, instructions, null, carryTheRest: true);
+    return;
+  }
+  for (final (index, account) in accounts.indexed) {
+    _oneMeans(b, instructions, account, carryTheRest: index == 0);
+  }
+}
+
+/// One payment means: how the invoice is paid, and one account it is paid to.
+void _oneMeans(
+  XmlBuilder b,
+  PaymentInstructions instructions,
+  CreditTransferAccount? account, {
+  required bool carryTheRest,
+}) {
   _group(b, 'SpecifiedTradeSettlementPaymentMeans', () {
     _text(b, 'TypeCode', instructions.means.value);
     _text(b, 'Information', instructions.meansText);
     final card = instructions.card;
-    if (card != null) {
+    if (carryTheRest && card != null) {
       _group(b, 'ApplicableTradeSettlementFinancialCard', () {
         _text(b, 'ID', card.primaryAccountNumber);
         _text(b, 'CardholderName', card.holderName);
       });
     }
     final debit = instructions.directDebit;
-    if (debit?.debitedAccountIdentifier != null) {
+    if (carryTheRest && debit?.debitedAccountIdentifier != null) {
       _group(b, 'PayerPartyDebtorFinancialAccount', () {
         _text(b, 'IBANID', debit!.debitedAccountIdentifier);
       });
     }
-    for (final account in instructions.creditTransfers) {
+    if (account != null) {
       _group(b, 'PayeePartyCreditorFinancialAccount', () {
         _text(b, 'IBANID', account.identifier);
         _text(b, 'AccountName', account.name);

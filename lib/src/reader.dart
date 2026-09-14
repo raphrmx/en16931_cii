@@ -320,34 +320,53 @@ Delivery? _delivery(XmlElement? element) {
   );
 }
 
+/// BG-16, gathered from every payment means the document writes.
+///
+/// CII carries one account to a payment means, so an invoice offering two
+/// accounts writes the group twice rather than the account twice. Reading
+/// only the first group gives back an invoice that offers one account where
+/// the sender offered several, and nothing complains: the rules count no
+/// accounts.
 PaymentInstructions? _payment(XmlElement? settlement) {
-  final element = _child(settlement, 'SpecifiedTradeSettlementPaymentMeans');
-  if (element == null) return null;
-  final card = _child(element, 'ApplicableTradeSettlementFinancialCard');
+  if (settlement == null) return null;
+  final groups = _children(
+    settlement,
+    'SpecifiedTradeSettlementPaymentMeans',
+  ).toList();
+  if (groups.isEmpty) return null;
+  final element = groups.first;
+  final card = groups
+      .map((group) => _child(group, 'ApplicableTradeSettlementFinancialCard'))
+      .nonNulls
+      .firstOrNull;
   final creditor = _text(settlement, 'CreditorReferenceID');
   final mandate = _text(
     settlement,
     'SpecifiedTradePaymentTerms/DirectDebitMandateID',
   );
-  final debited = _text(element, 'PayerPartyDebtorFinancialAccount/IBANID');
+  final debited = groups
+      .map((group) => _text(group, 'PayerPartyDebtorFinancialAccount/IBANID'))
+      .nonNulls
+      .firstOrNull;
   return PaymentInstructions(
     means: PaymentMeansCode(_text(element, 'TypeCode') ?? ''),
     meansText: _text(element, 'Information'),
     remittanceInformation: _text(settlement, 'PaymentReference'),
     creditTransfers: [
-      for (final account in _children(
-        element,
-        'PayeePartyCreditorFinancialAccount',
-      ))
-        CreditTransferAccount(
-          // BT-84 is an IBAN, or an account number of another shape.
-          _text(account, 'IBANID') ?? _text(account, 'ProprietaryID') ?? '',
-          name: _text(account, 'AccountName'),
-          providerBic: _text(
-            element,
-            'PayeeSpecifiedCreditorFinancialInstitution/BICID',
+      for (final group in groups)
+        for (final account in _children(
+          group,
+          'PayeePartyCreditorFinancialAccount',
+        ))
+          CreditTransferAccount(
+            // BT-84 is an IBAN, or an account number of another shape.
+            _text(account, 'IBANID') ?? _text(account, 'ProprietaryID') ?? '',
+            name: _text(account, 'AccountName'),
+            providerBic: _text(
+              group,
+              'PayeeSpecifiedCreditorFinancialInstitution/BICID',
+            ),
           ),
-        ),
     ],
     card: card == null
         ? null

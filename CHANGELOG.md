@@ -1,3 +1,14 @@
+## 0.1.3
+
+- Several payment accounts (BG-17 repeated) are written and read. CII carries
+  one account to a payment means, so an invoice offering two writes the group
+  twice; both sides put them all in one group, which lost the second bank
+  along the way.
+- `readCiiReporting` gives back the invoice and what the document carried that
+  the model has no room for. A line under a line is written in CII by nesting
+  the line element inside itself, so an ordinary line is not mistaken for one.
+  `ciiElementsBeyondTheModel` names what is looked for.
+
 ## 0.1.2
 
 - The README names `en16931_facturx`. France reads CII as well as Germany, and
