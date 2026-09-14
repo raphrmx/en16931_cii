@@ -56,8 +56,9 @@ void main() {
         // itself, so a violation usually means this library reads or checks
         // something wrong. The exceptions are documents that really are
         // wrong, and each is named with what is wrong with it.
-        final broken =
-            validate(invoice).map((violation) => violation.rule.id).toSet();
+        final broken = validate(
+          invoice,
+        ).map((violation) => violation.rule.id).toSet();
         expect(broken.difference(_knownBad[name] ?? const {}), isEmpty);
       });
 

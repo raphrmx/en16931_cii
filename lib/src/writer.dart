@@ -8,7 +8,8 @@ import 'package:xml/xml.dart';
 const String ciiInvoice =
     'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100';
 
-const String _ram = 'urn:un:unece:uncefact:data:standard:'
+const String _ram =
+    'urn:un:unece:uncefact:data:standard:'
     'ReusableAggregateBusinessInformationEntity:100';
 const String _udt =
     'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100';
@@ -31,16 +32,16 @@ String writeCii(Invoice invoice, {bool pretty = true}) {
   builder.processing('xml', 'version="1.0" encoding="UTF-8"');
   builder.element(
     'CrossIndustryInvoice',
-    namespace: ciiInvoice,
+    namespaceUri: ciiInvoice,
     nest: () {
-      builder.namespace(ciiInvoice, 'rsm');
-      builder.namespace(_ram, 'ram');
-      builder.namespace(_udt, 'udt');
+      builder.namespaceUri('rsm', ciiInvoice);
+      builder.namespaceUri('ram', _ram);
+      builder.namespaceUri('udt', _udt);
       _context(builder, invoice);
       _document(builder, invoice);
       builder.element(
         'SupplyChainTradeTransaction',
-        namespace: ciiInvoice,
+        namespaceUri: ciiInvoice,
         nest: () {
           for (final line in invoice.lines) {
             _line(builder, line, currency);
@@ -64,7 +65,7 @@ String writeCii(Invoice invoice, {bool pretty = true}) {
 void _context(XmlBuilder b, Invoice invoice) {
   b.element(
     'ExchangedDocumentContext',
-    namespace: ciiInvoice,
+    namespaceUri: ciiInvoice,
     nest: () {
       if (invoice.businessProcess != null) {
         _group(b, 'BusinessProcessSpecifiedDocumentContextParameter', () {
@@ -81,7 +82,7 @@ void _context(XmlBuilder b, Invoice invoice) {
 void _document(XmlBuilder b, Invoice invoice) {
   b.element(
     'ExchangedDocument',
-    namespace: ciiInvoice,
+    namespaceUri: ciiInvoice,
     nest: () {
       _text(b, 'ID', invoice.number);
       _text(b, 'TypeCode', invoice.typeCode.value);
@@ -268,7 +269,7 @@ void _agreement(XmlBuilder b, Invoice invoice) {
         if (attachment != null) {
           b.element(
             'AttachmentBinaryObject',
-            namespace: _ram,
+            namespaceUri: _ram,
             attributes: {
               'mimeCode': attachment.mimeCode,
               'filename': attachment.filename,
@@ -336,8 +337,11 @@ void _settlement(XmlBuilder b, Invoice invoice, String currency) {
   _group(b, 'ApplicableHeaderTradeSettlement', () {
     final debit = invoice.paymentInstructions?.directDebit;
     _text(b, 'CreditorReferenceID', debit?.creditorIdentifier);
-    _text(b, 'PaymentReference',
-        invoice.paymentInstructions?.remittanceInformation);
+    _text(
+      b,
+      'PaymentReference',
+      invoice.paymentInstructions?.remittanceInformation,
+    );
     _text(b, 'TaxCurrencyCode', invoice.vatAccountingCurrency);
     _text(b, 'InvoiceCurrencyCode', currency);
     final payee = invoice.payee;
@@ -390,8 +394,12 @@ void _settlement(XmlBuilder b, Invoice invoice, String currency) {
       _group(b, 'InvoiceReferencedDocument', () {
         _text(b, 'IssuerAssignedID', preceding.reference);
         if (preceding.issueDate != null) {
-          _date(b, 'FormattedIssueDateTime', preceding.issueDate!,
-              formatted: true);
+          _date(
+            b,
+            'FormattedIssueDateTime',
+            preceding.issueDate!,
+            formatted: true,
+          );
         }
       });
     }
@@ -511,26 +519,26 @@ class _Party {
 }
 
 _Party _sellerParty(Seller seller) => _Party(
-      name: seller.name,
-      tradingName: seller.tradingName,
-      address: seller.address,
-      identifiers: seller.identifiers,
-      legalRegistrationIdentifier: seller.legalRegistrationIdentifier,
-      vatIdentifier: seller.vatIdentifier,
-      taxRegistrationIdentifier: seller.taxRegistrationIdentifier,
-      electronicAddress: seller.electronicAddress,
-      contact: seller.contact,
-    );
+  name: seller.name,
+  tradingName: seller.tradingName,
+  address: seller.address,
+  identifiers: seller.identifiers,
+  legalRegistrationIdentifier: seller.legalRegistrationIdentifier,
+  vatIdentifier: seller.vatIdentifier,
+  taxRegistrationIdentifier: seller.taxRegistrationIdentifier,
+  electronicAddress: seller.electronicAddress,
+  contact: seller.contact,
+);
 
 _Party _buyerParty(Buyer buyer) => _Party(
-      name: buyer.name,
-      address: buyer.address,
-      identifier: buyer.identifier,
-      legalRegistrationIdentifier: buyer.legalRegistrationIdentifier,
-      vatIdentifier: buyer.vatIdentifier,
-      electronicAddress: buyer.electronicAddress,
-      contact: buyer.contact,
-    );
+  name: buyer.name,
+  address: buyer.address,
+  identifier: buyer.identifier,
+  legalRegistrationIdentifier: buyer.legalRegistrationIdentifier,
+  vatIdentifier: buyer.vatIdentifier,
+  electronicAddress: buyer.electronicAddress,
+  contact: buyer.contact,
+);
 
 void _party(XmlBuilder b, String name, _Party party) {
   _group(b, name, () {
@@ -569,7 +577,7 @@ void _party(XmlBuilder b, String name, _Party party) {
       _group(b, 'URIUniversalCommunication', () {
         b.element(
           'URIID',
-          namespace: _ram,
+          namespaceUri: _ram,
           attributes: {
             if (electronic.scheme != null) 'schemeID': electronic.scheme!,
           },
@@ -581,7 +589,7 @@ void _party(XmlBuilder b, String name, _Party party) {
       _group(b, 'SpecifiedTaxRegistration', () {
         b.element(
           'ID',
-          namespace: _ram,
+          namespaceUri: _ram,
           attributes: {'schemeID': 'VA'},
           nest: party.vatIdentifier,
         );
@@ -591,7 +599,7 @@ void _party(XmlBuilder b, String name, _Party party) {
       _group(b, 'SpecifiedTaxRegistration', () {
         b.element(
           'ID',
-          namespace: _ram,
+          namespaceUri: _ram,
           attributes: {'schemeID': 'FC'},
           nest: party.taxRegistrationIdentifier,
         );
@@ -615,17 +623,17 @@ void _address(XmlBuilder b, Address address) {
 // --- Writing one element ---------------------------------------------------
 
 void _group(XmlBuilder b, String name, void Function() nest) {
-  b.element(name, namespace: _ram, nest: nest);
+  b.element(name, namespaceUri: _ram, nest: nest);
 }
 
 void _text(XmlBuilder b, String name, String? value) {
   if (value == null) return;
-  b.element(name, namespace: _ram, nest: value);
+  b.element(name, namespaceUri: _ram, nest: value);
 }
 
 void _indicator(XmlBuilder b, {required bool charge}) {
   _group(b, 'ChargeIndicator', () {
-    b.element('Indicator', namespace: _udt, nest: '$charge');
+    b.element('Indicator', namespaceUri: _udt, nest: '$charge');
   });
 }
 
@@ -638,10 +646,8 @@ void _identifier(
   if (identifier == null) return;
   b.element(
     name,
-    namespace: _ram,
-    attributes: {
-      if (identifier.scheme != null) scheme: identifier.scheme!,
-    },
+    namespaceUri: _ram,
+    attributes: {if (identifier.scheme != null) scheme: identifier.scheme!},
     nest: identifier.value,
   );
 }
@@ -649,7 +655,7 @@ void _identifier(
 void _quantity(XmlBuilder b, String name, Decimal value, UnitCode? unit) {
   b.element(
     name,
-    namespace: _ram,
+    namespaceUri: _ram,
     attributes: {if (unit != null) 'unitCode': unit.value},
     nest: value.toString(),
   );
@@ -665,13 +671,14 @@ void _date(
 }) {
   b.element(
     name,
-    namespace: _ram,
+    namespaceUri: _ram,
     nest: () {
       b.element(
         formatted ? 'DateTimeString' : 'DateTimeString',
-        namespace: _udt,
+        namespaceUri: _udt,
         attributes: {'format': _dateFormat},
-        nest: '${date.year.toString().padLeft(4, '0')}'
+        nest:
+            '${date.year.toString().padLeft(4, '0')}'
             '${date.month.toString().padLeft(2, '0')}'
             '${date.day.toString().padLeft(2, '0')}',
       );
@@ -693,8 +700,8 @@ void _amount(
   if (value == null) return;
   b.element(
     name,
-    namespace: _ram,
-    attributes: {if (currency != null) 'currencyID': currency},
+    namespaceUri: _ram,
+    attributes: {'currencyID': ?currency},
     nest: exactScale ? value.toString() : value.toStringAsFixed(2),
   );
 }

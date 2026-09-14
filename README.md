@@ -2,10 +2,10 @@
 
 # EN 16931 CII
 
-[![Build](https://img.shields.io/github/actions/workflow/status/raphrmx/en16931_cii/ci.yml?branch=main&label=build)](https://github.com/raphrmx/en16931_cii/actions/workflows/ci.yml)
+![Build](https://img.shields.io/github/actions/workflow/status/raphrmx/en16931_cii/ci.yml?branch=main&label=build)
 [![Pub Version](https://img.shields.io/pub/v/en16931_cii?color=blue)](https://pub.dev/packages/en16931_cii)
 [![Maintainer](https://img.shields.io/badge/Maintainer-Raphael_Vrient-purple)](https://pub.dev/publishers/comapps.be/packages)
-[![License](https://img.shields.io/badge/Licence-MIT-blue)](/LICENSE)
+[![License](https://img.shields.io/badge/Licence-MIT-blue)](https://pub.dev/packages/en16931_cii/license)
 ![Maintenance](https://img.shields.io/badge/Maintained-yes-success)
 
 Writes the European electronic invoice as UN/CEFACT CII, the syntax France
@@ -15,8 +15,8 @@ and Germany read. Factur-X and XRechnung both sit on it.
 
 ```yaml
 dependencies:
-  en16931: ^0.1.0
-  en16931_cii: ^0.1.0
+  en16931: ^0.1.2
+  en16931_cii: ^0.1.2
 ```
 
 ## Write an invoice out
@@ -95,10 +95,13 @@ again, which is what lets an invoice state its VAT in a second currency.
 It does not decide what an invoice has to contain: that is the model's
 business, and `validate` from [en16931](https://pub.dev/packages/en16931) says
 whether it holds up. A country puts its own rules on top of the standard, and
-those live in a profile package: Germany reads CII, and
-[en16931_xrechnung](https://pub.dev/packages/en16931_xrechnung) holds what it
-adds. Sending the document is a different problem again.
+those live in a profile package: France and Germany both read CII, so
+[en16931_facturx](https://pub.dev/packages/en16931_facturx) holds the French
+levels and the hybrid PDF, and
+[en16931_xrechnung](https://pub.dev/packages/en16931_xrechnung) what Germany
+adds. Delivery is a separate choice: the same document goes over Peppol,
+through a portal, or inside a PDF.
 
 ## License
 
-MIT.
+Released under the [MIT licence](https://pub.dev/packages/en16931_cii/license).

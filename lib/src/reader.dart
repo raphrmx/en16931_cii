@@ -139,8 +139,10 @@ Invoice readCii(String xml) {
 // --- References ------------------------------------------------------------
 
 String? _referenceOfType(XmlElement? agreement, String type) {
-  for (final reference
-      in _children(agreement, 'AdditionalReferencedDocument')) {
+  for (final reference in _children(
+    agreement,
+    'AdditionalReferencedDocument',
+  )) {
     if (_text(reference, 'TypeCode') != type) continue;
     return _text(reference, 'IssuerAssignedID');
   }
@@ -148,8 +150,10 @@ String? _referenceOfType(XmlElement? agreement, String type) {
 }
 
 Identifier? _objectIdentifier(XmlElement? agreement) {
-  for (final reference
-      in _children(agreement, 'AdditionalReferencedDocument')) {
+  for (final reference in _children(
+    agreement,
+    'AdditionalReferencedDocument',
+  )) {
     if (_text(reference, 'TypeCode') != '130') continue;
     return _identifier(reference, 'IssuerAssignedID');
   }
@@ -158,8 +162,10 @@ Identifier? _objectIdentifier(XmlElement? agreement) {
 
 List<SupportingDocument> _supportingDocuments(XmlElement? agreement) {
   final documents = <SupportingDocument>[];
-  for (final reference
-      in _children(agreement, 'AdditionalReferencedDocument')) {
+  for (final reference in _children(
+    agreement,
+    'AdditionalReferencedDocument',
+  )) {
     final type = _text(reference, 'TypeCode');
     if (type == '130' || type == '50') continue;
     final binary = _child(reference, 'AttachmentBinaryObject');
@@ -186,7 +192,10 @@ List<SupportingDocument> _supportingDocuments(XmlElement? agreement) {
 
 Seller _seller(XmlElement? party) {
   if (party == null) {
-    return const Seller(name: '', address: Address(country: ''));
+    return const Seller(
+      name: '',
+      address: Address(country: ''),
+    );
   }
   return Seller(
     name: _text(party, 'Name') ?? '',
@@ -212,7 +221,10 @@ Seller _seller(XmlElement? party) {
 
 Buyer _buyer(XmlElement? party) {
   if (party == null) {
-    return const Buyer(name: '', address: Address(country: ''));
+    return const Buyer(
+      name: '',
+      address: Address(country: ''),
+    );
   }
   return Buyer(
     name: _text(party, 'Name') ?? '',
@@ -353,8 +365,10 @@ PaymentInstructions? _payment(XmlElement? settlement) {
 
 List<DocumentAllowanceCharge> _documentEntries(XmlElement? settlement) {
   final entries = <DocumentAllowanceCharge>[];
-  for (final element
-      in _children(settlement, 'SpecifiedTradeAllowanceCharge')) {
+  for (final element in _children(
+    settlement,
+    'SpecifiedTradeAllowanceCharge',
+  )) {
     final tax = _child(element, 'CategoryTradeTax');
     entries.add(
       DocumentAllowanceCharge(
@@ -449,7 +463,8 @@ List<InvoiceLine> _lines(XmlElement? transaction) {
         quantity:
             Decimal.tryParse(quantity?.innerText.trim() ?? '') ?? Decimal.zero,
         unit: UnitCode(quantity?.getAttribute('unitCode') ?? ''),
-        netAmount: _decimal(
+        netAmount:
+            _decimal(
               _child(
                 settlement,
                 'SpecifiedTradeSettlementLineMonetarySummation',
@@ -518,9 +533,7 @@ Item _item(XmlElement? element) {
         element,
         'DesignatedProductClassification',
       ))
-        if (_identifier(classification, 'ClassCode', scheme: 'listID')
-            case final code?)
-          code,
+        ?_identifier(classification, 'ClassCode', scheme: 'listID'),
     ],
     originCountry: _text(element, 'OriginTradeCountry/ID'),
     attributes: [
@@ -550,8 +563,9 @@ Price _price(XmlElement? agreement) {
             _child(gross, 'AppliedTradeAllowanceCharge'),
             'ActualAmount',
           ),
-    baseQuantity:
-        quantity == null ? null : Decimal.tryParse(quantity.innerText.trim()),
+    baseQuantity: quantity == null
+        ? null
+        : Decimal.tryParse(quantity.innerText.trim()),
     baseQuantityUnit: unit == null ? null : UnitCode(unit),
   );
 }
@@ -580,8 +594,8 @@ XmlElement? _child(XmlElement? element, String path) {
 
 Iterable<XmlElement> _children(XmlElement? element, String name) =>
     element == null
-        ? const []
-        : element.childElements.where((child) => child.localName == name);
+    ? const []
+    : element.childElements.where((child) => child.localName == name);
 
 String? _text(XmlElement? element, String path) {
   final found = _child(element, path);

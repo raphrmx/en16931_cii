@@ -21,27 +21,27 @@ Invoice _invoice({
   InvoiceTypeCode? typeCode,
   List<InvoiceLine>? lines,
   List<DocumentAllowanceCharge> allowancesAndCharges = const [],
-}) =>
-    Invoice.fromLines(
-      number: '2026-0042',
-      issueDate: DateTime(2026, 9, 13),
-      dueDate: DateTime(2026, 10, 13),
-      typeCode: typeCode ?? InvoiceTypeCode.commercialInvoice,
-      seller: _seller,
-      buyer: _buyer,
-      allowancesAndCharges: allowancesAndCharges,
-      lines: lines ??
-          [
-            InvoiceLine.of(
-              id: '1',
-              item: const Item(name: 'Consulting'),
-              quantity: 8,
-              unitPrice: 150.00,
-              vatRate: 21,
-              unit: UnitCode.hour,
-            ),
-          ],
-    );
+}) => Invoice.fromLines(
+  number: '2026-0042',
+  issueDate: DateTime(2026, 9, 13),
+  dueDate: DateTime(2026, 10, 13),
+  typeCode: typeCode ?? InvoiceTypeCode.commercialInvoice,
+  seller: _seller,
+  buyer: _buyer,
+  allowancesAndCharges: allowancesAndCharges,
+  lines:
+      lines ??
+      [
+        InvoiceLine.of(
+          id: '1',
+          item: const Item(name: 'Consulting'),
+          quantity: 8,
+          unitPrice: 150.00,
+          vatRate: 21,
+          unit: UnitCode.hour,
+        ),
+      ],
+);
 
 XmlElement _root(Invoice invoice) =>
     XmlDocument.parse(writeCii(invoice)).rootElement;
@@ -110,9 +110,9 @@ void main() {
 
   group('a line', () {
     XmlElement line() => _at(
-          _root(_invoice()),
-          'SupplyChainTradeTransaction/IncludedSupplyChainTradeLineItem',
-        )!;
+      _root(_invoice()),
+      'SupplyChainTradeTransaction/IncludedSupplyChainTradeLineItem',
+    )!;
 
     test('carries its identifier and its product', () {
       expect(_text(line(), 'AssociatedDocumentLineDocument/LineID'), '1');
@@ -120,10 +120,7 @@ void main() {
     });
 
     test('carries the quantity with its unit', () {
-      final quantity = _at(
-        line(),
-        'SpecifiedLineTradeDelivery/BilledQuantity',
-      );
+      final quantity = _at(line(), 'SpecifiedLineTradeDelivery/BilledQuantity');
       expect(quantity!.innerText, '8');
       expect(quantity.getAttribute('unitCode'), 'HUR');
     });
@@ -147,8 +144,10 @@ void main() {
     });
 
     test('carries its VAT under the VAT type code', () {
-      final tax =
-          _at(line(), 'SpecifiedLineTradeSettlement/ApplicableTradeTax');
+      final tax = _at(
+        line(),
+        'SpecifiedLineTradeSettlement/ApplicableTradeTax',
+      );
       expect(_text(tax, 'TypeCode'), 'VAT');
       expect(_text(tax, 'CategoryCode'), 'S');
       expect(_text(tax, 'RateApplicablePercent'), '21');
@@ -157,9 +156,9 @@ void main() {
 
   group('the header', () {
     XmlElement settlement() => _at(
-          _root(_invoice()),
-          'SupplyChainTradeTransaction/ApplicableHeaderTradeSettlement',
-        )!;
+      _root(_invoice()),
+      'SupplyChainTradeTransaction/ApplicableHeaderTradeSettlement',
+    )!;
 
     test('states the currency once', () {
       expect(_text(settlement(), 'InvoiceCurrencyCode'), 'EUR');
@@ -186,7 +185,9 @@ void main() {
       expect(vat!.innerText, '252.00');
       expect(vat.getAttribute('currencyID'), 'EUR');
       expect(
-          _at(totals, 'LineTotalAmount')!.getAttribute('currencyID'), isNull);
+        _at(totals, 'LineTotalAmount')!.getAttribute('currencyID'),
+        isNull,
+      );
     });
 
     test('carries the seller under a tax registration', () {
@@ -215,9 +216,10 @@ void main() {
     test('carries the due date under the payment terms', () {
       expect(
         _text(
-            settlement(),
-            'SpecifiedTradePaymentTerms/DueDateDateTime/'
-            'DateTimeString'),
+          settlement(),
+          'SpecifiedTradePaymentTerms/DueDateDateTime/'
+          'DateTimeString',
+        ),
         '20261013',
       );
     });
