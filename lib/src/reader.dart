@@ -486,8 +486,7 @@ List<InvoiceLine> _lines(XmlElement? transaction) {
         quantity:
             Decimal.tryParse(quantity?.innerText.trim() ?? '') ?? Decimal.zero,
         unit: UnitCode(quantity?.getAttribute('unitCode') ?? ''),
-        netAmount:
-            _decimal(
+        netAmount: _decimal(
               _child(
                 settlement,
                 'SpecifiedTradeSettlementLineMonetarySummation',
@@ -556,7 +555,9 @@ Item _item(XmlElement? element) {
         element,
         'DesignatedProductClassification',
       ))
-        ?_identifier(classification, 'ClassCode', scheme: 'listID'),
+        if (_identifier(classification, 'ClassCode', scheme: 'listID')
+            case final id?)
+          id,
     ],
     originCountry: _text(element, 'OriginTradeCountry/ID'),
     attributes: [
@@ -586,9 +587,8 @@ Price _price(XmlElement? agreement) {
             _child(gross, 'AppliedTradeAllowanceCharge'),
             'ActualAmount',
           ),
-    baseQuantity: quantity == null
-        ? null
-        : Decimal.tryParse(quantity.innerText.trim()),
+    baseQuantity:
+        quantity == null ? null : Decimal.tryParse(quantity.innerText.trim()),
     baseQuantityUnit: unit == null ? null : UnitCode(unit),
   );
 }
@@ -617,8 +617,8 @@ XmlElement? _child(XmlElement? element, String path) {
 
 Iterable<XmlElement> _children(XmlElement? element, String name) =>
     element == null
-    ? const []
-    : element.childElements.where((child) => child.localName == name);
+        ? const []
+        : element.childElements.where((child) => child.localName == name);
 
 String? _text(XmlElement? element, String path) {
   final found = _child(element, path);

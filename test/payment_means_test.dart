@@ -4,35 +4,35 @@ import 'package:test/test.dart';
 
 /// An invoice that can be paid into either of two accounts.
 Invoice _twoAccounts() => Invoice.fromLines(
-  number: '2026-0042',
-  issueDate: DateTime(2026, 9, 14),
-  seller: const Seller(
-    name: 'COMAPPS SRL',
-    vatIdentifier: 'BE0123456789',
-    address: Address(city: 'Bruxelles', postalCode: '1000', country: 'BE'),
-  ),
-  buyer: const Buyer(
-    name: 'Client SA',
-    address: Address(city: 'Namur', postalCode: '5000', country: 'BE'),
-  ),
-  paymentInstructions: const PaymentInstructions(
-    means: PaymentMeansCode.sepaCreditTransfer,
-    remittanceInformation: '+++090/9337/55493+++',
-    creditTransfers: [
-      CreditTransferAccount('BE68539007547034', name: 'Compte courant'),
-      CreditTransferAccount('NL03INGB0004489902', name: 'Compte second'),
-    ],
-  ),
-  lines: [
-    InvoiceLine.of(
-      id: '1',
-      item: const Item(name: 'Consulting'),
-      quantity: 1,
-      unitPrice: 100,
-      vatRate: 21,
-    ),
-  ],
-);
+      number: '2026-0042',
+      issueDate: DateTime(2026, 9, 14),
+      seller: const Seller(
+        name: 'COMAPPS SRL',
+        vatIdentifier: 'BE0123456789',
+        address: Address(city: 'Bruxelles', postalCode: '1000', country: 'BE'),
+      ),
+      buyer: const Buyer(
+        name: 'Client SA',
+        address: Address(city: 'Namur', postalCode: '5000', country: 'BE'),
+      ),
+      paymentInstructions: const PaymentInstructions(
+        means: PaymentMeansCode.sepaCreditTransfer,
+        remittanceInformation: '+++090/9337/55493+++',
+        creditTransfers: [
+          CreditTransferAccount('BE68539007547034', name: 'Compte courant'),
+          CreditTransferAccount('NL03INGB0004489902', name: 'Compte second'),
+        ],
+      ),
+      lines: [
+        InvoiceLine.of(
+          id: '1',
+          item: const Item(name: 'Consulting'),
+          quantity: 1,
+          unitPrice: 100,
+          vatRate: 21,
+        ),
+      ],
+    );
 
 void main() {
   group('several accounts (BG-17 repeated)', () {

@@ -21,27 +21,27 @@ Invoice _invoice({
   InvoiceTypeCode? typeCode,
   List<InvoiceLine>? lines,
   List<DocumentAllowanceCharge> allowancesAndCharges = const [],
-}) => Invoice.fromLines(
-  number: '2026-0042',
-  issueDate: DateTime(2026, 9, 13),
-  dueDate: DateTime(2026, 10, 13),
-  typeCode: typeCode ?? InvoiceTypeCode.commercialInvoice,
-  seller: _seller,
-  buyer: _buyer,
-  allowancesAndCharges: allowancesAndCharges,
-  lines:
-      lines ??
-      [
-        InvoiceLine.of(
-          id: '1',
-          item: const Item(name: 'Consulting'),
-          quantity: 8,
-          unitPrice: 150.00,
-          vatRate: 21,
-          unit: UnitCode.hour,
-        ),
-      ],
-);
+}) =>
+    Invoice.fromLines(
+      number: '2026-0042',
+      issueDate: DateTime(2026, 9, 13),
+      dueDate: DateTime(2026, 10, 13),
+      typeCode: typeCode ?? InvoiceTypeCode.commercialInvoice,
+      seller: _seller,
+      buyer: _buyer,
+      allowancesAndCharges: allowancesAndCharges,
+      lines: lines ??
+          [
+            InvoiceLine.of(
+              id: '1',
+              item: const Item(name: 'Consulting'),
+              quantity: 8,
+              unitPrice: 150.00,
+              vatRate: 21,
+              unit: UnitCode.hour,
+            ),
+          ],
+    );
 
 XmlElement _root(Invoice invoice) =>
     XmlDocument.parse(writeCii(invoice)).rootElement;
@@ -110,9 +110,9 @@ void main() {
 
   group('a line', () {
     XmlElement line() => _at(
-      _root(_invoice()),
-      'SupplyChainTradeTransaction/IncludedSupplyChainTradeLineItem',
-    )!;
+          _root(_invoice()),
+          'SupplyChainTradeTransaction/IncludedSupplyChainTradeLineItem',
+        )!;
 
     test('carries its identifier and its product', () {
       expect(_text(line(), 'AssociatedDocumentLineDocument/LineID'), '1');
@@ -156,9 +156,9 @@ void main() {
 
   group('the header', () {
     XmlElement settlement() => _at(
-      _root(_invoice()),
-      'SupplyChainTradeTransaction/ApplicableHeaderTradeSettlement',
-    )!;
+          _root(_invoice()),
+          'SupplyChainTradeTransaction/ApplicableHeaderTradeSettlement',
+        )!;
 
     test('states the currency once', () {
       expect(_text(settlement(), 'InvoiceCurrencyCode'), 'EUR');

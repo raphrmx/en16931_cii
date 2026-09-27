@@ -48,7 +48,7 @@ final class CiiRead {
 const Map<String, String> ciiElementsBeyondTheModel = {
   'ram:IncludedSupplyChainTradeLineItem':
       'a line under a line, which EN 16931 has no term for and XRechnung does '
-      'not accept in this syntax',
+          'not accept in this syntax',
 };
 
 /// [document] read into an invoice, with what was left behind.

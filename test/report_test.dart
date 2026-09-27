@@ -103,8 +103,7 @@ String _invoice({int lines = 1, int children = 0}) {
 
 const String _rsm =
     'urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100';
-const String _ram =
-    'urn:un:unece:uncefact:data:standard:'
+const String _ram = 'urn:un:unece:uncefact:data:standard:'
     'ReusableAggregateBusinessInformationEntity:100';
 const String _udt =
     'urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100';
