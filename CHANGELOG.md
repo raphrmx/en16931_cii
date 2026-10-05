@@ -1,3 +1,11 @@
+## 0.1.6
+
+- `homepage` and the Live demo badge point at packages.comapps.be, where the
+  demo site moved. The old address redirects there.
+- The badge row carries a PayPal donation badge, `funding` points pub.dev
+  at the same donation page, and the README ends on the other packages
+  COMAPPS publishes. Nothing about the library changed.
+
 ## 0.1.5
 
 - The package asks for Dart 3.3 instead of 3.11, so a project that has not

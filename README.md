@@ -1,11 +1,12 @@
 # EN 16931 CII
 
-[![Live demo](https://img.shields.io/badge/Live_demo-comapps.web.app-3c9a70)](https://comapps.web.app/en16931/)
+[![Live demo](https://img.shields.io/badge/Live_demo-packages.comapps.be-3c9a70)](https://packages.comapps.be/en16931/)
 [![Pub Version](https://img.shields.io/pub/v/en16931_cii?color=0175C2)](https://pub.dev/packages/en16931_cii)
 [![Build](https://img.shields.io/github/actions/workflow/status/raphrmx/en16931_cii/ci.yml?branch=main&label=build)](https://github.com/raphrmx/en16931_cii/actions/workflows/ci.yml)
 ![Maintainer](https://img.shields.io/badge/Maintainer-Raphael_Vrient-733d90)
 [![Licence](https://img.shields.io/badge/Licence-MIT-8C6A3F)](LICENSE)
 ![Platforms](https://img.shields.io/badge/Platforms-Android,_iOS,_macOS,_Windows,_Linux,_Web-22375C.svg)
+[![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-00457C?logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=ZN6D382YQAV5N)
 
 Writes the European electronic invoice as UN/CEFACT CII, the syntax France
 and Germany read. Factur-X and XRechnung both sit on it.
@@ -121,3 +122,19 @@ through a portal, or inside a PDF.
 ## License
 
 Released under the [MIT licence](https://pub.dev/packages/en16931_cii/license).
+
+## More from COMAPPS
+
+The EN 16931 family:
+
+| Package | What it does |
+| --- | --- |
+| [en16931](https://pub.dev/packages/en16931) | The semantic model of the European invoice and the rules of the standard. |
+| [en16931_ubl](https://pub.dev/packages/en16931_ubl) | Writes and reads it as UBL 2.1. |
+| [en16931_peppol](https://pub.dev/packages/en16931_peppol) | The Peppol BIS Billing 3.0 profile. |
+| [en16931_xrechnung](https://pub.dev/packages/en16931_xrechnung) | The XRechnung profile, for German public bodies. |
+| [en16931_facturx](https://pub.dev/packages/en16931_facturx) | The Factur-X profile and its hybrid PDF. |
+| [en16931_ublbe](https://pub.dev/packages/en16931_ublbe) | The UBL.BE profile, for Belgian accounting software. |
+
+Every package COMAPPS publishes is listed at
+[packages.comapps.be](https://packages.comapps.be).
