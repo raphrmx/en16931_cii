@@ -11,6 +11,8 @@
 Writes the European electronic invoice as UN/CEFACT CII, the syntax France
 and Germany read. Factur-X and XRechnung both sit on it.
 
+![Which en16931 packages for which invoice: build and check with en16931, then en16931_peppol and en16931_ubl over Peppol, en16931_ublbe for Belgian accounting, en16931_xrechnung for a German public body, en16931_facturx for a French invoice](https://public.comapps.be/packages/en16931/en16931_situations.svg)
+
 ## Install
 
 ```yaml
@@ -126,6 +128,8 @@ Released under the [MIT licence](https://pub.dev/packages/en16931_cii/license).
 ## More from COMAPPS
 
 The EN 16931 family:
+
+![The en16931 packages: the model, en16931_ubl and en16931_cii for the syntaxes, then the profiles built on them](https://public.comapps.be/packages/en16931/en16931.svg)
 
 | Package | What it does |
 | --- | --- |

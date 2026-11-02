@@ -14,13 +14,16 @@ topics:
   - cii
   - facturx
   - invoice
+screenshots:
+  - description: Which packages to add for a Peppol, UBL.BE, XRechnung or Factur-X invoice, and what each one writes.
+    path: screenshots/situations.png
 
 environment:
   sdk: ^3.3.0
 
 dependencies:
   decimal: ^3.2.6
-  en16931: ^0.1.4
+  en16931: ^0.1.6
   xml: '>=6.5.0 <8.0.0'
 
 dev_dependencies:
